@@ -1,5 +1,9 @@
 from os.path import dirname, exists, join
-from typing import Literal
+
+try:
+    from typing_extensions import Literal
+except ImportError:
+    from typing import Literal
 
 from deb_wiki_mod.lib.core import convert_to_makrdown, html2text_factory
 
