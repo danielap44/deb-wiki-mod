@@ -1,0 +1,4 @@
+.venv
+.vscode
+News.md
+__pycache__
