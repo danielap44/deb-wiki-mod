@@ -5,10 +5,11 @@ import html2text
 from bs4 import BeautifulSoup
 
 __all__ = (
+    "convert_to_makrdown",
     "fetch_debian_news_page",
     "resolve_content",
     "html2text_factory",
-    "write_html_page_to_markdown_file",
+    "write_markdown_to_output_file",
 )
 
 
@@ -21,6 +22,8 @@ def resolve_content(html: str, *, content_id: Optional[str]):
     soup = BeautifulSoup(html, "html.parser")
     if content_id is None:
         return soup
+    if soup.body is None:  # this shouldn't happen
+        raise Exception("The fetched page has no body tag or body element")
     content = soup.body.find(id=content_id)
 
     if content is None:
@@ -38,10 +41,10 @@ def html2text_factory(baseurl: str):
     return h
 
 
-def write_html_page_to_markdown_file(
-    *, page: BeautifulSoup, baseurl: str, filename: str
-):
-    converter = html2text_factory(baseurl)
-    markdown_content = converter.handle(str(page))
+def convert_to_makrdown(converter: html2text.HTML2Text, html: str):
+    return converter.handle(html)
+
+
+def write_markdown_to_output_file(*, markdown: str, filename: str):
     with open(filename, "w", encoding="utf-8") as file:
-        file.write(markdown_content)
+        file.write(markdown)
