@@ -4,14 +4,10 @@ from os.path import basename, abspath
 from typing import Optional
 
 
-_DEBIAN_WIKI_NEWS_PAGE_URL = "https://wiki.debian.org/News"
-
-
 _parser = ArgumentParser()
 _parser.add_argument(
     "url",
     type=str,
-    default=_DEBIAN_WIKI_NEWS_PAGE_URL,
     help="The url to the page to parse and convert to markdown",
 )
 _parser.add_argument(
