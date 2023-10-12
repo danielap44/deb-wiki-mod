@@ -8,12 +8,59 @@ https://www.outreachy.org/outreachy-december-2023-internship-round/communities/d
 
 A basic Python program to convert the Debian Wiki News page (https://wiki.debian.org/News) to markdown.
 
+## Local Installation
+
+This package provides a `setup.py` script that can be used to install the package. You can install the package locally by running:
+
+```bash
+make install-local
+```
+
+and you can also uninstall by running:
+
+```bash
+make uninstall-local
+```
+
+The package after installation exposes a cli program with the name `deb_wiki_mod`.
+
+**Basic usage**
+
+```bash
+deb_wiki_mod [--main] [-o|--output] <url>
+```
+
+[See #Usage](#usage) for more
+
 ## Usage
+
+Standard usage can be achieved by installing the package as you would any other Python package. This package is not on a registry
+so only local installation is available. After installing, you can call the program from the command line like so:
+
+```bash
+deb_wiki_mod https://wiki.debian.org/News
+```
+
+By default, this outputs a markdown file with a filename the same as the basename of the provided url in the current working directory,
+except a desired output file path is specified
+
+```bash
+deb_wiki_mod https://wiki.debian.org/News --output wiki-news.md
+```
+
+The major content element of the page can also be specified by `id` this helps to skip page layout content and avoids duplication
+when generating markdown for multiple pages with the same basic layout.
+
+```bash
+deb_wiki_mod https://wiki.debian.org/News --output wiki-news.md --main main_content
+```
+
+### Non standard zero installation usage
 
 A shell script, `run.sh`, is provided together with a `Makefile` to make usage easier and a no-brainer.
 
-The `run.sh` script will do the necessary bootstrapping, setup and installations, but if you want more control,
-you can reach into the `main.py` file directly, having the same CLI API as the `run.sh` script, and do the
+The script will do the necessary bootstrapping, setup and installations, but if you want more control,
+you can reach into the `main.py` file directly, having the same CLI API as the shell script, and do the
 installations and setup manually.
 
 For the first time you may want to run:
@@ -25,8 +72,10 @@ chmod +x ./run.sh
 There are two conversion options provided for easy customization:
 
 - There's the option to convert the whole page to markdown
-- There's the option to convert the main content area of the page `div#page` (`<div id="page">...</div>`)
-  to markdown
+- There's the option to convert the main content area of the page if you want to skip layout content
+  which could be the same for many pages
+
+Note: all arguments passed to the shell script is redirected to the Python program file.
 
 By calling `./run.sh` the whole page would be converted to markdown on a best-effort basis. Calling `run.sh`
 with a `--main=<main-content-id>` flag will only convert the main content area to markdown.
@@ -45,7 +94,7 @@ This converts the entire page to markdown
 
 This converts the main content area of the page to markdown
 
-Alternatively, using the provided `Makefile` which is more intuitive:
+Alternatively, using the provided `Makefile` which is more intuitive and less generic (specific to Debian Wiki News page):
 
 ```bash
 make deb-wiki-news-to-md
@@ -59,7 +108,7 @@ make deb-wiki-news-main-to-md
 
 This converts the main content area of the page to markdown
 
-## Author
+## LICENSE
 
-Daniel Adepitan
+MIT License Copyright (c) 2023 Daniel Adepitan
 
