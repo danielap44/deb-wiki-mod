@@ -21,7 +21,9 @@ def main(argv):
         print(str(exc))
         return sys.exit(1)
     write_html_page_to_markdown_file(
-        page=page, baseurl=options.url, filename="./News.md"
+        page=page,
+        baseurl=options.url,
+        filename=options.output,
     )
 
 
