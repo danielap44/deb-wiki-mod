@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from dataclasses import dataclass
 from os.path import basename, abspath
+from typing import Optional
 
 
 _DEBIAN_WIKI_NEWS_PAGE_URL = "https://wiki.debian.org/News"
@@ -31,7 +32,7 @@ _parser.add_argument(
 @dataclass(kw_only=True)
 class CLIOptions:
     url: str = ...  # type: ignore
-    main: str | None = None
+    main: Optional[str] = None
     output: str = ...  # type: ignore
 
 

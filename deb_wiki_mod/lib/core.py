@@ -1,3 +1,5 @@
+from typing import Optional
+
 import requests
 import html2text
 from bs4 import BeautifulSoup
@@ -15,7 +17,7 @@ def fetch_debian_news_page(url: str):
     return response
 
 
-def resolve_content(html: str, *, content_id: str | None):
+def resolve_content(html: str, *, content_id: Optional[str]):
     soup = BeautifulSoup(html, "html.parser")
     if content_id is None:
         return soup
