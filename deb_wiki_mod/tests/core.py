@@ -3,8 +3,6 @@ import unittest
 from typing import Any, Callable
 
 from deb_wiki_mod.lib.core import *
-# from deb_wiki_mod.lib
-# from deb_wiki_mod.lib.core
 
 main_page_id = "page"
 

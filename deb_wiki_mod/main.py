@@ -2,15 +2,15 @@
 
 import sys
 
-from lib.cli import get_cli_options
-from lib.core import (
+from deb_wiki_mod.lib.cli import get_cli_options
+from deb_wiki_mod.lib.core import (
     fetch_debian_news_page,
     resolve_content,
     write_html_page_to_markdown_file,
 )
 
 
-def main(argv):
+def main():
     options = get_cli_options()
     response = fetch_debian_news_page(options.url)
     html = response.text
@@ -28,4 +28,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()

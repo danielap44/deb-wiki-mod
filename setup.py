@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="deb_wiki_mod",
-    packages=find_packages(exclude=["test"]),
+    packages=find_packages(exclude=["tests"]),
     version="0.1.0",
     description="A simple to to convert a HTML page to Markdown",
     author="Daniel Adepitan <danieladepitan44@gmail.com>",
