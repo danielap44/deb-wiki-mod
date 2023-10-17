@@ -10,10 +10,31 @@ A basic Python program to convert the Debian Wiki News page (https://wiki.debian
 
 ## Local Installation
 
-This package provides a `setup.py` script that can be used to install the package. You can install the package locally by running:
+This package provides a `setup.py` script that can be used to install the package. You can install the package locally by running
+the following script:
+
+> It's worth noting that installation should be done in a virtual environment rather than in the system path of your
+> Python installation. So you may want to create a virtual env first
+>
+> `python -m venv .venv`
+>
+> There are two installation modes in the Makefile.
+> - **Dev mode**: For development purposes. This is useful when changes are made in the 
+>  source code that need to take effect without needing to re-install.
+> - **Standard mode**: For production ready environments. This installs the package as
+>  it would normally do if the package were on a registry, but without the network requests
+>  for fetching the package artifacts.
+
+**Dev mode**:
 
 ```bash
-make install-local
+make install-dev-local # pip3 install --editable=.
+```
+
+**Standard mode**:
+
+```bash
+make install-local # pip3 install .
 ```
 
 and you can also uninstall by running:
