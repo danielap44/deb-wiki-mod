@@ -17,6 +17,7 @@ the following script:
 > Python installation. So you may want to create a virtual env first
 >
 > `python -m venv .venv`
+>
 > `. .venv/bin/activate`
 >
 > There are two installation modes in the Makefile.
