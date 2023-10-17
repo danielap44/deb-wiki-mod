@@ -4,6 +4,6 @@ deb-wiki-news-main-to-md:
 	./run.sh https://wiki.debian.org/News --main=page
 
 install-local:
-	pip install --editable=.
+	pip3 install --editable=.
 uninstall-local:
-	pip uninstall deb_wiki_mod
+	pip3 uninstall deb_wiki_mod
