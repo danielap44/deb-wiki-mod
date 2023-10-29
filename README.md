@@ -50,7 +50,7 @@ The package after installation exposes a cli program with the name `deb_wiki_mod
 **Basic usage**
 
 ```bash
-deb_wiki_mod [--main] [-o|--output] <url>
+deb_wiki_mod [--main] [-d|--out-dir] [-f|--out-file] <urls ...>
 ```
 
 [See #Usage](#usage) for more
@@ -68,15 +68,26 @@ By default, this outputs a markdown file with a filename the same as the basenam
 except a desired output file path is specified
 
 ```bash
-deb_wiki_mod https://wiki.debian.org/News --output wiki-news.md
+deb_wiki_mod https://wiki.debian.org/News --out-file wiki-news.md
 ```
 
-The major content element of the page can also be specified by `id` this helps to skip page layout content and avoids duplication
+The main content element of the page can also be specified by `id` this helps to skip page layout content and avoids duplication
 when generating markdown for multiple pages with the same basic layout.
 
 ```bash
-deb_wiki_mod https://wiki.debian.org/News --output wiki-news.md --main main_content
+deb_wiki_mod https://wiki.debian.org/News --out-file wiki-news.md --main page
 ```
+
+Multiple urls may also be specified to be processed at once. Although there's a catch: the `--out-file` 
+option does not work with multiple urls and using `--main` may break if the pages don't all have
+a common main content id. The `--out-dir` options works well with both single and multiple urls.
+
+```bash
+deb_wiki_mod https://wiki.debian.org/News https://wiki.debian.org/News/project/ --out-dir ./wiki/markdown
+```
+
+This generates the files `News.md` and `project.md` in `./wiki/markdown` directory.
+
 
 ### Non standard zero installation usage
 
