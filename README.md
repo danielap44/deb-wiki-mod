@@ -1,31 +1,33 @@
 # Experiment to Modernize the Debian Wiki (Outreachy Contribution)
 
-This is an Outrecahy contribution project from Daniel Adepitan to complete the task as defined on the
-contribution page of the internship project
+This is an Outrecahy contribution project from Daniel Adepitan to complete the task as defined on
+the contribution page of the internship project
 https://www.outreachy.org/outreachy-december-2023-internship-round/communities/debian/#experiment-to-modernize-the-debian-wiki
 
 ## Synopsis
 
-A basic Python program to convert the Debian Wiki News page (https://wiki.debian.org/News) to markdown.
+A basic Python program to convert the Debian Wiki News page (https://wiki.debian.org/News) to
+markdown.
 
 ## Local Installation
 
-This package provides a `setup.py` script that can be used to install the package. You can install the package locally by running
-the following script:
+This package provides a `setup.py` script that can be used to install the package. You can install
+the package locally by running the following script:
 
-> It's worth noting that installation should be done in a virtual environment rather than in the system path of your
-> Python installation. So you may want to create a virtual env first
+> It's worth noting that installation should be done in a virtual environment rather than in the
+> system path of your Python installation. So you may want to create a virtual env first
 >
 > `python -m venv .venv`
 >
 > `. .venv/bin/activate`
 >
 > There are two installation modes in the Makefile.
-> - **Dev mode**: For development purposes. This is useful when changes are made in the 
->  source code that need to take effect without needing to re-install.
-> - **Standard mode**: For production ready environments. This installs the package as
->  it would normally do if the package were on a registry, but without the network requests
->  for fetching the package artifacts.
+>
+> - **Dev mode**: For development purposes. This is useful when changes are made in the source code
+>   that need to take effect without needing to re-install.
+> - **Standard mode**: For production ready environments. This installs the package as it would
+>   normally do if the package were on a registry, but without the network requests for fetching the
+>   package artifacts.
 
 **Dev mode**:
 
@@ -57,30 +59,33 @@ deb_wiki_mod [--main] [-d|--out-dir] [-f|--out-file] <urls ...>
 
 ## Usage
 
-Standard usage can be achieved by installing the package as you would any other Python package. This package is not on a registry
-so only local installation is available. After installing, you can call the program from the command line like so:
+Standard usage can be achieved by installing the package as you would any other Python package. This
+package is not on a registry so only local installation is available. After installing, you can call
+the program from the command line like so:
 
 ```bash
 deb_wiki_mod https://wiki.debian.org/News
 ```
 
-By default, this outputs a markdown file with a filename the same as the basename of the provided url in the current working directory,
-except a desired output file path is specified
+By default, this outputs a markdown file with a filename the same as the basename of the provided
+url in the current working directory, except a desired output file path is specified
 
 ```bash
 deb_wiki_mod https://wiki.debian.org/News --out-file wiki-news.md
 ```
 
-The main content element of the page can also be specified by `id` this helps to skip page layout content and avoids duplication
-when generating markdown for multiple pages with the same basic layout.
+The main content element of the page can also be specified by `id` this helps to skip page layout
+content and avoids duplication when generating markdown for multiple pages with the same basic
+layout.
 
 ```bash
 deb_wiki_mod https://wiki.debian.org/News --out-file wiki-news.md --main page
 ```
 
-Multiple urls may also be specified to be processed at once. Although there's a catch: the `--out-file` 
-option does not work with multiple urls and using `--main` may break if the pages don't all have
-a common main content id. The `--out-dir` options works well with both single and multiple urls.
+Multiple urls may also be specified to be processed at once. Although there's a catch: the
+`--out-file` option does not work with multiple urls and using `--main` may break if the pages don't
+all have a common main content id. The `--out-dir` option works well with both single and multiple
+urls.
 
 ```bash
 deb_wiki_mod https://wiki.debian.org/News https://wiki.debian.org/News/project/ --out-dir ./wiki/markdown
@@ -88,14 +93,14 @@ deb_wiki_mod https://wiki.debian.org/News https://wiki.debian.org/News/project/ 
 
 This generates the files `News.md` and `project.md` in `./wiki/markdown` directory.
 
-
 ### Non standard zero installation usage
 
-A shell script, `run.sh`, is provided together with a `Makefile` to make usage easier and a no-brainer.
+A shell script, `run.sh`, is provided together with a `Makefile` to make usage easier and a
+no-brainer.
 
-The script will do the necessary bootstrapping, setup and installations, but if you want more control,
-you can reach into the `main.py` file directly, having the same CLI API as the shell script, and do the
-installations and setup manually.
+The script will do the necessary bootstrapping, setup and installations, but if you want more
+control, you can reach into the `main.py` file directly, having the same CLI API as the shell
+script, and do the installations and setup manually.
 
 For the first time you may want to run:
 
@@ -111,8 +116,8 @@ There are two conversion options provided for easy customization:
 
 Note: all arguments passed to the shell script is redirected to the Python program file.
 
-By calling `./run.sh` the whole page would be converted to markdown on a best-effort basis. Calling `run.sh`
-with a `--main=<main-content-id>` flag will only convert the main content area to markdown.
+By calling `./run.sh` the whole page would be converted to markdown on a best-effort basis. Calling
+`run.sh` with a `--main=<main-content-id>` flag will only convert the main content area to markdown.
 
 ```bash
 # ./run.sh <url>
@@ -128,7 +133,8 @@ This converts the entire page to markdown
 
 This converts the main content area of the page to markdown
 
-Alternatively, using the provided `Makefile` which is more intuitive and less generic (specific to Debian Wiki News page):
+Alternatively, using the provided `Makefile` which is more intuitive and less generic (specific to
+Debian Wiki News page):
 
 ```bash
 make deb-wiki-news-to-md
@@ -144,18 +150,17 @@ This converts the main content area of the page to markdown
 
 ## Command Line Options
 
-The command line is the entry interface provided by this program and there aren't much of 
-any application programming interface exposed to be interfaced with by another script other
-than through the command line.
+The command line is the entry interface provided by this program and there aren't much of any
+application programming interface exposed to be interfaced with by another script other than through
+the command line.
 
-| Argument        | Description     |
-| --------------- | --------------- |
-| `<urls>`            | One or more urls to the page to parse and convert to markdown                                                       |
-| `--main`            | Used to specify the id of the main content area of the page (`<main id="main-page">...</main>`, `--main=main-page`) |
-| `--out-file \| -f`  | Specifies the output file path to write the markdown content to. Cannot be used with multiple urls                  |
-| `--out-dir \| -d`   | Specifies the output directory to write the markdown content generated for each of the provided urls                |
+| Argument         | Description                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `<urls>`         | One or more urls to the page to parse and convert to markdown                                                       |
+| `--main`         | Used to specify the id of the main content area of the page (`<main id="main-page">...</main>`, `--main=main-page`) |
+| `-f\|--out-file` | Specifies the output file path to write the markdown content to. Cannot be used with multiple urls                  |
+| `-d\|--out-dir`  | Specifies the output directory to write the markdown content generated for each of the provided urls                |
 
 ## LICENSE
 
 MIT License Copyright (c) 2023 Daniel Adepitan
-
