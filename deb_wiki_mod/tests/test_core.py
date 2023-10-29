@@ -1,18 +1,13 @@
 # import re
 import unittest
 
-# from typing import Any, Callable
+from os.path import abspath, basename, join
 
 from bs4 import BeautifulSoup
 
 from deb_wiki_mod.lib.core import *
 
 from . import DEBIAN_WIKI_NEWS_PAGE_URL, get_fixture
-
-
-# minify: Callable[[Any], str] = lambda x: re.sub(
-#     r"^ +|(?<=\n)\n", "", str(x), flags=re.MULTILINE
-# )
 
 
 class CoreTest(unittest.TestCase):
@@ -43,6 +38,43 @@ class CoreTest(unittest.TestCase):
         converter = html2text_factory(DEBIAN_WIKI_NEWS_PAGE_URL)
         markdown_content = convert_to_makrdown(converter, self.html)
         self.assertEqual(markdown_content, get_fixture("markdown"))
+
+    def test_compute_output_file(self):
+        filename1 = compute_output_file(
+            url=DEBIAN_WIKI_NEWS_PAGE_URL,
+            outfile="Filename.md",
+            outdir=None,
+        )
+        filename2 = compute_output_file(
+            url=DEBIAN_WIKI_NEWS_PAGE_URL,
+            outfile="Filename.md",
+            outdir="./pages",
+        )
+        filename3 = compute_output_file(
+            url=DEBIAN_WIKI_NEWS_PAGE_URL,
+            outdir="./pages",
+            outfile=None,
+        )
+        filename4 = compute_output_file(
+            url=DEBIAN_WIKI_NEWS_PAGE_URL,
+            outdir=None,
+            outfile=None,
+        )
+        self.assertEqual(filename1, "Filename.md")
+        self.assertEqual(filename1, filename2)
+        self.assertEqual(
+            filename3,
+            abspath(join("./pages", basename(DEBIAN_WIKI_NEWS_PAGE_URL) + ".md")),
+        )
+        self.assertEqual(
+            filename4,
+            abspath(basename(DEBIAN_WIKI_NEWS_PAGE_URL) + ".md"),
+        )
+
+    def test_plural(self):
+        self.assertEqual(plural(0, "egg", "eggs"), "egg")
+        self.assertEqual(plural(1, "egg", "eggs"), "egg")
+        self.assertEqual(plural(2, "egg", "eggs"), "eggs")
 
 
 if __name__ == "__main__":
