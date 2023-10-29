@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import List, Optional
 
 __all__ = ("get_cli_options",)
 
@@ -39,13 +39,13 @@ _parser.add_argument(
 
 @dataclass()
 class CLIOptions:
-    urls: list[str] = field(default_factory=list)
+    urls: List[str] = field(default_factory=list)
     main: Optional[str] = None
     out_file: Optional[str] = None
     out_dir: Optional[str] = None
 
 
-def get_cli_options(argv: list[str]):
+def get_cli_options(argv: List[str]):
     """Given a list of command line arguments, parse the argument and serialize them into a dataclass object
 
     Args:
