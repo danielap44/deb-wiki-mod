@@ -131,6 +131,19 @@ make deb-wiki-news-main-to-md
 
 This converts the main content area of the page to markdown
 
+## Command Line Options
+
+The command line is the entry interface provided by this program and there aren't much of 
+any application programming interface exposed to be interfaced with by another script other
+than through the command line.
+
+| Argument        | Description     |
+| --------------- | --------------- |
+| `<urls>`            | One or more urls to the page to parse and convert to markdown                                                       |
+| `--main`            | Used to specify the id of the main content area of the page (`<main id="main-page">...</main>`, `--main=main-page`) |
+| `--out-file \| -f`  | Specifies the output file path to write the markdown content to. Cannot be used with multiple urls                  |
+| `--out-dir \| -d`   | Specifies the output directory to write the markdown content generated for each of the provided urls                |
+
 ## LICENSE
 
 MIT License Copyright (c) 2023 Daniel Adepitan
