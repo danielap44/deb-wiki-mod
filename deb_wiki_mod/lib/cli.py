@@ -37,7 +37,7 @@ _parser.add_argument(
 )
 
 
-@dataclass(kw_only=True)
+@dataclass()
 class CLIOptions:
     urls: list[str] = field(default_factory=list)
     main: Optional[str] = None
