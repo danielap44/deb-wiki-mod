@@ -1,7 +1,7 @@
 # import re
 import unittest
 
-from os.path import abspath, basename, join
+from os.path import abspath
 
 from bs4 import BeautifulSoup
 
@@ -40,35 +40,38 @@ class CoreTest(unittest.TestCase):
         self.assertEqual(markdown_content, get_fixture("markdown"))
 
     def test_compute_output_file(self):
-        filename1 = compute_output_file(
-            url=DEBIAN_WIKI_NEWS_PAGE_URL,
-            outfile="Filename.md",
-            outdir=None,
+        no_ouput = compute_output_file(
+            url="https://wiki.debian.org/News",
+            output=None,
         )
-        filename2 = compute_output_file(
-            url=DEBIAN_WIKI_NEWS_PAGE_URL,
-            outfile="Filename.md",
-            outdir="./pages",
+        with_output = compute_output_file(
+            url="https://wiki.debian.org/News",
+            output="./markdown/File.md",
         )
-        filename3 = compute_output_file(
-            url=DEBIAN_WIKI_NEWS_PAGE_URL,
-            outdir="./pages",
-            outfile=None,
+        with_output_dir = compute_output_file(
+            url="https://wiki.debian.org/News",
+            output="./markdown/",  # The trailing slash is important to show it's a dir
         )
-        filename4 = compute_output_file(
-            url=DEBIAN_WIKI_NEWS_PAGE_URL,
-            outdir=None,
-            outfile=None,
+        no_output_no_basename = compute_output_file(
+            url="https://www.debian.org/News/project/",
+            output=None,
         )
-        self.assertEqual(filename1, "Filename.md")
-        self.assertEqual(filename1, filename2)
+        with_output_no_basename = compute_output_file(
+            url="https://www.debian.org/News/project/",
+            output="./markdown/File.md",
+        )
+        with_output_dir_no_basename = compute_output_file(
+            url="https://www.debian.org/News/project/",
+            output="./markdown/",
+        )
+
+        self.assertEqual(no_ouput, abspath("./News.md"))
+        self.assertEqual(with_output, abspath("./markdown/File.md"))
+        self.assertEqual(with_output_dir, abspath("./markdown/News.md"))
+        self.assertEqual(no_output_no_basename, abspath("./News/project/index.md"))
+        self.assertEqual(with_output_no_basename, abspath("./markdown/File.md"))
         self.assertEqual(
-            filename3,
-            abspath(join("./pages", basename(DEBIAN_WIKI_NEWS_PAGE_URL) + ".md")),
-        )
-        self.assertEqual(
-            filename4,
-            abspath(basename(DEBIAN_WIKI_NEWS_PAGE_URL) + ".md"),
+            with_output_dir_no_basename, abspath("./markdown/News/project/index.md")
         )
 
     def test_plural(self):

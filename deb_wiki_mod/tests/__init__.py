@@ -3,6 +3,7 @@ from os.path import dirname, exists, join
 from deb_wiki_mod.lib.core import convert_to_makrdown, html2text_factory
 
 DEBIAN_WIKI_NEWS_PAGE_URL = "https://wiki.debian.org/News"
+DEBIAN_PROJECT_PAGE_URL = "https://www.debian.org/News/project/"
 
 fixture_md_file = join(dirname(__file__), "test_output.md")
 fixture_html_file = join(dirname(__file__), "test_input.html")
