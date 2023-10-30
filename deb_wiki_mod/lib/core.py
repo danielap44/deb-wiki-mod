@@ -1,8 +1,10 @@
-from os.path import basename, abspath, join
-from typing import Optional
+from os.path import abspath, basename, dirname, isdir, join, normpath
+from typing import List, Optional, TypedDict
+from urllib.parse import urlparse
 
-import requests
+import toml
 import html2text
+import requests
 from bs4 import BeautifulSoup
 
 __all__ = (
@@ -14,6 +16,21 @@ __all__ = (
     "resolve_content",
     "write_markdown_to_output_file",
 )
+
+
+class RootTOMLPagesDict(TypedDict):
+    url: str
+    output: Optional[str]
+    page_id: Optional[str]
+
+
+class RootTOMLConfigDict(TypedDict):
+    output: Optional[str]
+    pages: List[RootTOMLPagesDict]
+
+
+class TOMLConfigDict(TypedDict):
+    root: RootTOMLConfigDict
 
 
 def fetch_debian_news_page(url: str):
@@ -92,22 +109,34 @@ def write_markdown_to_output_file(*, markdown: str, filename: str):
         file.write(markdown)
 
 
-def compute_output_file(*, url: str, outfile: Optional[str], outdir: Optional[str]):
+def compute_output_file(*, url: str, output: Optional[str]):
     """Compute the resultant output filename or file path from a set of variable options.
 
     Args:
         url: The url of the page whose markdown content is being written to a file
-        outfile: The out-file arg supplied from the command line read from CLIOptions.
-        ourdir: The out-dir arg supplied from the command line read from CLIOptions.
+        output: The output arg supplied from the command line read from CLIOptions.
     Returs:
         The eventual file path taking into account all variables.
     """
-    filename = basename(url) + ".md"
-    if outfile:
+
+    parsed_url = urlparse(url)
+    url_basename = basename(url)
+    url_path = parsed_url.path
+    resolved_basename = url_basename or "index"
+
+    if output is None:
+        url_basepath = dirname(url_path) if url_basename != "" else parsed_url.path
+        joined = join(f".{url_basepath}", resolved_basename) + ".md"
+        outfile = normpath(abspath(joined))
         return outfile
-    if not outdir:
-        return abspath(filename)
-    return abspath(join(outdir, filename))
+    # Output is not a directory and is most likely a file
+    if basename(output) != "" and not isdir(output):
+        return abspath(output)
+    else:
+        url_basepath = dirname(url_path) if url_basename != "" else parsed_url.path
+        joined = join(f"{output}.{url_basepath}", resolved_basename) + ".md"
+        outfile = normpath(abspath(joined))
+        return outfile
 
 
 def plural(count: int, singular: str, plural: str):
@@ -121,3 +150,8 @@ def plural(count: int, singular: str, plural: str):
         returns signular or plural
     """
     return plural if count > 1 else singular
+
+
+def get_config_from_toml_file(config_file: str) -> TOMLConfigDict:
+    toml_content = toml.load(config_file)
+    return TOMLConfigDict(**toml_content)
