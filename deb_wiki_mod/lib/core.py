@@ -1,5 +1,10 @@
 from os.path import abspath, basename, dirname, isdir, join, normpath
-from typing import List, Optional, TypedDict
+from typing import List, Optional
+
+try:
+    from typing import TypedDict
+except ImportError:
+    from typing_extensions import TypedDict
 from urllib.parse import urlparse
 
 import toml
@@ -8,7 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 
 __all__ = (
-    "compute_output_file",
+    "resolve_output_file",
     "convert_to_makrdown",
     "fetch_debian_news_page",
     "html2text_factory",
@@ -109,8 +114,19 @@ def write_markdown_to_output_file(*, markdown: str, filename: str):
         file.write(markdown)
 
 
-def compute_output_file(*, url: str, output: Optional[str]):
-    """Compute the resultant output filename or file path from a set of variable options.
+def resolve_output_file(*, url: str, output: Optional[str]):
+    """Resolve the resultant output filename or file path from a set of variable options.
+    The resolution algorithm takes into account the specified `output` and the `url`.
+
+    The Algorithm:
+        - When `output` is `None`, the resultant path is the `cwd` "concatenated" with the
+        pathname of the url. If the pathname of the `url` does not have a basename, a
+        basename of "index" is given to the eventual path with an appropriate file extension.
+        - When `output` is not `None`, and `output` seems to be more likely a file than a directory,
+        judging only by heuristics, then the absolute path of `output` is the eventual path.
+        - When `output` is a directory, then the eventual path is the output path "concatenated"
+        with the pathname of the url. If the pathname of the `url` does not have a basename, a
+        basename of "index" is given to the eventual path with an appropriate file extension.
 
     Args:
         url: The url of the page whose markdown content is being written to a file
@@ -125,7 +141,7 @@ def compute_output_file(*, url: str, output: Optional[str]):
     resolved_basename = url_basename or "index"
 
     if output is None:
-        url_basepath = dirname(url_path) if url_basename != "" else parsed_url.path
+        url_basepath = dirname(url_path) if url_basename != "" else url_path
         joined = join(f".{url_basepath}", resolved_basename) + ".md"
         outfile = normpath(abspath(joined))
         return outfile
@@ -133,8 +149,8 @@ def compute_output_file(*, url: str, output: Optional[str]):
     if basename(output) != "" and not isdir(output):
         return abspath(output)
     else:
-        url_basepath = dirname(url_path) if url_basename != "" else parsed_url.path
-        joined = join(f"{output}.{url_basepath}", resolved_basename) + ".md"
+        url_basepath = dirname(url_path) if url_basename != "" else url_path
+        joined = join(f"{output}/.{url_basepath}", resolved_basename) + ".md"
         outfile = normpath(abspath(joined))
         return outfile
 
@@ -153,5 +169,12 @@ def plural(count: int, singular: str, plural: str):
 
 
 def get_config_from_toml_file(config_file: str) -> TOMLConfigDict:
+    """Load a TOML config file given the path to the file.
+    
+    Args:
+        config_file: The path to the TOML file
+    Returns: 
+        A typed dict as TOMLConfigDict
+    """
     toml_content = toml.load(config_file)
     return TOMLConfigDict(**toml_content)

@@ -10,7 +10,7 @@ from requests import HTTPError
 from deb_wiki_mod.lib.cli import get_cli_options, CLIDownOptions, CLITOMLOptions
 from deb_wiki_mod.lib.config import PROGRAM_NAME
 from deb_wiki_mod.lib.core import (
-    compute_output_file,
+    resolve_output_file,
     convert_to_makrdown,
     fetch_debian_news_page,
     get_config_from_toml_file,
@@ -52,8 +52,10 @@ def down_handler(options_list: List[CLIDownOptions]):
         )
         converter = html2text_factory(options.url)
         markdown_content = convert_to_makrdown(converter, str(page))
-
-        filename = compute_output_file(url=options.url, output=options.output)
+        filename = resolve_output_file(url=options.url, output=options.output)
+        
+        if not os.path.isdir(os.path.dirname(filename)):
+            pathlib.Path(os.path.dirname(filename)).mkdir(parents=True, exist_ok=True)
         logger.info(f"Writing output file to disk: {options.url} -> {filename}")
         write_markdown_to_output_file(markdown=markdown_content, filename=filename)
         success_count += 1
@@ -113,6 +115,7 @@ def toml_handler(options: CLITOMLOptions):
         url, output, page_id = page.get("url"), page.get("output"), page.get("page_id")
 
         if output is not None:
+            # this may be unnecessary since join would return the last abs path passed in
             if not os.path.isabs(output):
                 output = os.path.normpath(os.path.join(root_output, output))
             down_options = CLIDownOptions(url=url, page_id=page_id, output=output)

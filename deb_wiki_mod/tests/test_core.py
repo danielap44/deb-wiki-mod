@@ -40,27 +40,27 @@ class CoreTest(unittest.TestCase):
         self.assertEqual(markdown_content, get_fixture("markdown"))
 
     def test_compute_output_file(self):
-        no_ouput = compute_output_file(
+        no_ouput = resolve_output_file(
             url="https://wiki.debian.org/News",
             output=None,
         )
-        with_output = compute_output_file(
+        with_output = resolve_output_file(
             url="https://wiki.debian.org/News",
             output="./markdown/File.md",
         )
-        with_output_dir = compute_output_file(
+        with_output_dir = resolve_output_file(
             url="https://wiki.debian.org/News",
             output="./markdown/",  # The trailing slash is important to show it's a dir
         )
-        no_output_no_basename = compute_output_file(
+        no_output_no_basename = resolve_output_file(
             url="https://www.debian.org/News/project/",
             output=None,
         )
-        with_output_no_basename = compute_output_file(
+        with_output_no_basename = resolve_output_file(
             url="https://www.debian.org/News/project/",
             output="./markdown/File.md",
         )
-        with_output_dir_no_basename = compute_output_file(
+        with_output_dir_no_basename = resolve_output_file(
             url="https://www.debian.org/News/project/",
             output="./markdown/",
         )
