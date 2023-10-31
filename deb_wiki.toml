@@ -8,5 +8,5 @@ page_id = "page"
 
 [[root.pages]]
 url = "https://www.debian.org/News/project/"
-output = "project.md"
+# output = "project.md"
 page_id = "content"
