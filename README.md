@@ -178,17 +178,17 @@ The command line is the entry interface provided by this program and there aren'
 application programming interface exposed to be interfaced with by another script other than through
 the command line.
 
-| Command       | Description                                                                                      |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| `down <url>`  | Download the HTML page from the URL and parse it to markdown                                     |
-| `toml <path>` | Take a path to a TOML file containing URLs to HTML pages to be downloaded and parsed to markdown |
+| Command                    | Description                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `deb_wiki_mod down <url>`  | Download the HTML page from the URL and parse it to markdown                                     |
+| `deb_wiki_mod toml <path>` | Take a path to a TOML file containing URLs to HTML pages to be downloaded and parsed to markdown |
 
-| Command       | Argument       | Description                                                                                                            |
-| ------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `down <url>`  | `<url>`        | One or more urls to the page to parse and convert to markdown                                                          |
-|               | `--page-id`    | Used to specify the id of the main content area of the page (`<main id="main-page">...</main>`, `--page-id=main-page`) |
-|               | `-o\|--output` | Specifies the output file path or output directory                                                                     |
-| `toml <path>` | N/A            | N/A                                                                                                                    |
+**`deb_wiki_mod down <url>`**
+
+| Argument       | Description                                                                                                            |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `--page-id`    | Used to specify the id of the main content area of the page (`<main id="main">...</main>`, `--page-id=main`) |
+| `-o\|--output` | Specifies the output file path or output directory                                                                     |
 
 ## LICENSE
 
