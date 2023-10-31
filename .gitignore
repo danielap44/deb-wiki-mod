@@ -1,4 +1,6 @@
 .venv
 .vscode
+.prettierrc
 News.md
 __pycache__
+markdown/**/*
