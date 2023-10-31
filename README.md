@@ -52,26 +52,32 @@ The package after installation exposes a cli program with the name `deb_wiki_mod
 **Basic usage**
 
 ```bash
-deb_wiki_mod [--main] [-d|--out-dir] [-f|--out-file] <urls ...>
+deb_wiki_mod down <url> [--page-id] [-o|--output]
+deb_wiki_mod toml <path>
 ```
 
 [See #Usage](#usage) for more
 
 ## Usage
 
-Standard usage can be achieved by installing the package as you would any other Python package. This
-package is not on a registry so only local installation is available. After installing, you can call
-the program from the command line like so:
+Appropriate usage is by installing the package as you would any other Python package. This package
+is not on a registry so only local installation is available. After installing, you can call the
+program from the command line like so:
 
 ```bash
-deb_wiki_mod https://wiki.debian.org/News
+deb_wiki_mod down https://wiki.debian.org/News
 ```
 
 By default, this outputs a markdown file with a filename the same as the basename of the provided
-url in the current working directory, except a desired output file path is specified
+URL in the current working directory, except a desired output file path is specified. The output
+option can specify either a directory or a filepath. When a filepath is specified, the resulting
+markdown content is saved to the filepath. When a directory is specified, the resulting markdown is
+saved to that directory and may contain subdirectories based on the pathname of the URL and the
+basename of the URL. In situations where the URL doesn't have a basename, "index" is used, followed
+by an appropriate file extension (e.g., `.md`)
 
 ```bash
-deb_wiki_mod https://wiki.debian.org/News --out-file wiki-news.md
+deb_wiki_mod down https://wiki.debian.org/News --output wiki-news.md
 ```
 
 The main content element of the page can also be specified by `id` this helps to skip page layout
@@ -79,19 +85,37 @@ content and avoids duplication when generating markdown for multiple pages with 
 layout.
 
 ```bash
-deb_wiki_mod https://wiki.debian.org/News --out-file wiki-news.md --main page
+deb_wiki_mod down https://wiki.debian.org/News --output wiki-news.md --page-id page
 ```
 
-Multiple urls may also be specified to be processed at once. Although there's a catch: the
-`--out-file` option does not work with multiple urls and using `--main` may break if the pages don't
-all have a common main content id. The `--out-dir` option works well with both single and multiple
-urls.
+To process multiple URLs at once, a TOML config file may be used. A basic TOML config file looks
+something like this:
+
+```toml
+# deb_wiki.toml
+[root]
+output = "./markdown"
+
+[[root.pages]]
+url = "https://wiki.debian.org/News"
+output = "News.md"
+page_id = "page"
+
+[[root.pages]]
+url = "https://www.debian.org/News/project/"
+page_id = "content"
+```
 
 ```bash
-deb_wiki_mod https://wiki.debian.org/News https://wiki.debian.org/News/project/ --out-dir ./wiki/markdown
+deb_wiki_mod toml ./deb_wiki.toml
 ```
 
-This generates the files `News.md` and `project.md` in `./wiki/markdown` directory.
+This generates the files `./News.md` and `./News/project/index.md` in `./markdown` directory.
+
+**Note:**
+
+Paths in the TOML config file are resolved relative to the path of the TOML file rather than the
+`cwd`
 
 ### Non standard zero installation usage
 
@@ -121,14 +145,14 @@ By calling `./run.sh` the whole page would be converted to markdown on a best-ef
 
 ```bash
 # ./run.sh <url>
-./run.sh https://wiki.debian.org/News
+./run.sh down https://wiki.debian.org/News
 ```
 
 This converts the entire page to markdown
 
 ```bash
-# ./run.sh <url> --main=page
-./run.sh https://wiki.debian.org/News --main=page
+# ./run.sh down <url> --page-id=page
+./run.sh down https://wiki.debian.org/News --page-id=page
 ```
 
 This converts the main content area of the page to markdown
@@ -154,12 +178,17 @@ The command line is the entry interface provided by this program and there aren'
 application programming interface exposed to be interfaced with by another script other than through
 the command line.
 
-| Argument         | Description                                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `<urls>`         | One or more urls to the page to parse and convert to markdown                                                       |
-| `--main`         | Used to specify the id of the main content area of the page (`<main id="main-page">...</main>`, `--main=main-page`) |
-| `-f\|--out-file` | Specifies the output file path to write the markdown content to. Cannot be used with multiple urls                  |
-| `-d\|--out-dir`  | Specifies the output directory to write the markdown content generated for each of the provided urls                |
+| Command                    | Description                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `deb_wiki_mod down <url>`  | Download the HTML page from the URL and parse it to markdown                                     |
+| `deb_wiki_mod toml <path>` | Take a path to a TOML file containing URLs to HTML pages to be downloaded and parsed to markdown |
+
+**`deb_wiki_mod down <url>`**
+
+| Argument       | Description                                                                                                            |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `--page-id`    | Used to specify the id of the main content area of the page (`<main id="main">...</main>`, `--page-id=main`) |
+| `-o\|--output` | Specifies the output file path or output directory                                                                     |
 
 ## LICENSE
 

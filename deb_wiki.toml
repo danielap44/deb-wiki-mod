@@ -1,0 +1,12 @@
+[root]
+output = "./markdown"
+
+[[root.pages]]
+url = "https://wiki.debian.org/News"
+output = "News.md"
+page_id = "page"
+
+[[root.pages]]
+url = "https://www.debian.org/News/project/"
+# output = "project.md"
+page_id = "content"
